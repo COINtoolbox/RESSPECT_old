@@ -1,8 +1,8 @@
-# Copyright 2019 snactclass software
-# Author: Emille E. O. Ishida
-#         Based on initial prototype developed by the CRP #4 team
+# Copyright 2020 RESSPECT software
+# Author: The RESSPECT team
+#         Initial skeleton from ActSNClass
 #
-# created on 10 August 2019
+# created on 2 March 2020
 #
 # Licensed GNU General Public License v3.0;
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 __all__ = ['learn_loop']
 
-from actsnclass import DataBase
+from resspect import DataBase
 
 
 def learn_loop(nloops: int, strategy: str, path_to_features: str,
@@ -65,6 +65,8 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
         Number of classes to consider in the classification
         Currently only nclass == 2 is implemented.    
     """
+
+    ## This module will need to be expanded for RESSPECT
 
     # initiate object
     data = DataBase()

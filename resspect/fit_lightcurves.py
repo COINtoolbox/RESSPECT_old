@@ -1,8 +1,8 @@
-# Copyright 2019 snactclass software
-# Author: Emille E. O. Ishida
-#         Based on initial prototype developed by the CRP #4 team
+# Copyright 2020 RESSPECT software
+# Author: The RESSPECT team
+#         Initial skeleton taken from ActSNClass
 #
-# created on 9 August 2019
+# created on 5 March 2020
 #
 # Licensed GNU General Public License v3.0;
 # you may not use this file except in compliance with the License.
@@ -359,6 +359,8 @@ class LightCurve(object):
         bool
             If true, sample is changed to `queryable`.
         """
+
+        ### This will need to change for RESSPECT
 
         # create photo flag
         photo_flag = self.photometry['mjd'].values <= mjd

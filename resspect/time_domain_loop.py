@@ -1,8 +1,8 @@
-# Copyright 2019 snactclass software
-# Author: Emille E. O. Ishida
-#         Based on initial prototype developed by the CRP #4 team
+# Copyright 2020 RESSPECT software
+# Author: The RESSPECT team
+#         Initial skeleton taken from ActSNClass
 #
-# created on 10 August 2019
+# created on 5 March 2020
 #
 # Licensed GNU General Public License v3.0;
 # you may not use this file except in compliance with the License.
@@ -16,34 +16,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from actsnclass.time_domain_loop import get_original_training
+
 __all__ = ['time_domain_loop', 'get_original_training']
 
-from actsnclass import DataBase
-
-
-def get_original_training(path_to_features, method='Bazin', screen=False):
-    """Read original full light curve training sample
-
-    Parameters
-    ----------
-    path_to_features: str
-        Complete path to file holding full light curve features.
-    method: str (optional)
-        Feature extraction method. Only option implemented is "Bazin".
-    screen: bool (optional)
-        If true, show on screen comments on the dimensions of some key elements.
-
-    Returns
-    -------
-    snactclass.DataBase
-        Information about the original full light curve analys.
-    """
-
-    data = DataBase()
-    data.load_features(path_to_features, method=method, screen=screen)
-    data.build_samples(initial_training='original')
-
-    return data
+from resspect import DataBase
 
 
 def time_domain_loop(days: list,  output_diag_file: str,
@@ -92,6 +69,8 @@ def time_domain_loop(days: list,  output_diag_file: str,
         ensuring that at least half are SN Ia
         Default is 'original'.
     """
+
+    ## This will need to change for RESSPECT
 
     # initiate object
     data = DataBase()

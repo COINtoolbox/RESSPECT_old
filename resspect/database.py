@@ -1,8 +1,8 @@
-# Copyright 2019 snactclass software
-# Author: Emille E. O. Ishida
-#         Based on initial prototype developed by the CRP #4 team
+# Copyright 2020 RESSPECT software
+# Author: The RESSPECT team
+#         Initial skeleton from ActSNClass
 #
-# created on 10 August 2019
+# created on 02 March 2020
 #
 # Licensed GNU General Public License v3.0;
 # you may not use this file except in compliance with the License.
@@ -22,10 +22,13 @@ import os
 import pandas as pd
 import tarfile
 
-from actsnclass.classifiers import random_forest
-from actsnclass.query_strategies import uncertainty_sampling, random_sampling
+from actsnclass.classifiers import *
+from actsnclass.query_strategies import *
 from actsnclass.metrics import get_snpcc_metric
 
+from resspect.classifiers import *
+from resspect.query_strategies import *
+from resspect.metrics import *
 
 __all__ = ['DataBase']
 
@@ -97,7 +100,7 @@ class DataBase:
 
     Examples
     --------
-    >>> from actsnclass import DataBase
+    >>> from resspect import DataBase
 
     Define the necessary paths
 

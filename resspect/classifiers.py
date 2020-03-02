@@ -1,8 +1,8 @@
-# Copyright 2019 snactclass software
-# Author: Emille E. O. Ishida
+# Copyright 2020 RESSPECT software
+# Author: The RESSPECT team
 #         Based on initial prototype developed by the CRP #4 team
 #
-# created on 10 August 2019
+# created on 2 March 2020
 #
 # Licensed GNU General Public License v3.0;
 # you may not use this file except in compliance with the License.
@@ -16,14 +16,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__all__ = ['random_forest']
+__all__ = ['knn']
 
 import numpy as np
-from sklearn.ensemble import RandomForestClassifier
+from actsnclass.classifiers import random_forest
+from sklearn.neighbors import KNeighborsClassifier
 
 
-def random_forest(train_features:  np.array, train_labels: np.array,
-                  test_features: np.array, nest=1000, seed=42):
+def knn(train_features:  np.array, train_labels: np.array,
+                  test_features: np.array, nneighbors=10, seed=42):
     """Random Forest classifier.
 
     Parameters
@@ -34,9 +35,9 @@ def random_forest(train_features:  np.array, train_labels: np.array,
         Training sample classes.
     test_features: np.array
         Test sample features.
-    nest: int (optional)
-        Number of estimators (trees) in the forest.
-        Default is 1000.
+    nneighbors: int (optional)
+        Number of nearest neighbors to consider. 
+        Default is 10.
     seed: float (optional)
         Seed for random number generator. Default is 42.
 
@@ -49,7 +50,7 @@ def random_forest(train_features:  np.array, train_labels: np.array,
     """
 
     # create classifier instance
-    clf = RandomForestClassifier(n_estimators=nest, random_state=seed)
+    clf = KNeighborsClassifier(n_neighbors=nneighbors, random_state=seed)
     clf.fit(train_features, train_labels)                     # train
     predictions = clf.predict(test_features)                # predict
     prob = clf.predict_proba(test_features)       # get probabilities
