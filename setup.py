@@ -20,12 +20,10 @@ import setuptools
 
 
 setuptools.setup(
-    name='actsnclass',
-    version='1.1',
+    name='RESSPECT',
+    version='0.1',
     packages=setuptools.find_packages(),
-    py_modules=['bazin',
-                'build_snpcc_canonical',
-                'classifiers',
+    py_modules=['classifiers',
                 'data_base',
                 'fit_lightcurves',
                 'learn_loop',
@@ -33,15 +31,10 @@ setuptools.setup(
                 'plot_results',
                 'query_strategies',
                 'time_domain'],
-    scripts=['actsnclass/scripts/build_canonical.py',
-             'actsnclass/scripts/build_time_domain.py',
-             'actsnclass/scripts/fit_dataset.py',
-             'actsnclass/scripts/make_diagnostic_plots.py',
-             'actsnclass/scripts/run_loop.py',
-             'actsnclass/scripts/run_time_domain.py'],
-    url='https://github.com/COINtoolbox/ActSNClass',
+    scripts=[],
+    url='https://github.com/COINtoolbox/RESSPECT',
     license='GNU3',
-    author='Emille E. O.Ishida',
+    author='The RESSPECT team',
     author_email='emille@cosmostatistics-initiative.org',
-    description='Active Learning for SN photometric classification'
+    description='Recommendation System for Spectroscopic follow-up'
 )
