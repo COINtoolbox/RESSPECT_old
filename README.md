@@ -40,13 +40,11 @@ We recommend that you work within a [virtual environment](https://packaging.pyth
  
 You will need to install the `Python` package ``virtualenv``. In MacOS or Linux, do::
 
-   >>> python3 -m pip install --user virtualenv  
+   >> python3 -m pip install --user virtualenv  
 
-Navigate to a ``env_directory`` where you will store the new virtual environment and create it:  
+Navigate to a ``env_directory`` where you will store the new virtual environment and create it::
 
-.. code-block:: bash  
-
-    >>> python3 -m venv RESSPECT  
+    >> python3 -m venv RESSPECT  
 
 .. hint:: Make sure you deactivate any ``conda`` environment you might have running before moving forward.   
 
