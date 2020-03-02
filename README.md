@@ -46,34 +46,26 @@ Navigate to a ``env_directory`` where you will store the new virtual environment
 
     >> python3 -m venv RESSPECT  
 
-.. hint:: Make sure you deactivate any ``conda`` environment you might have running before moving forward.   
+> Make sure you deactivate any ``conda`` environment you might have running before moving forward.   
 
-Once the environment is set up you can activate it:  
+Once the environment is set up you can activate it,
 
-.. code-block::bash  
-
-   >>> source <env_directory>/bin/activate  
+    >> source <env_directory>/bin/activate  
 
 You should see a ``(RESSPECT)`` flag in the extreme left of terminal command line.   
 
 Next, clone this repository in another chosen location:  
 
-.. code-block:: bash  
-
-    (RESSPECT) >>> git clone https://github.com/COINtoolbox/RESSPECT.git  
+    (RESSPECT) >> git clone https://github.com/COINtoolbox/RESSPECT.git  
 
 Navigate to the repository folder and do  
 
-.. code-block:: bash  
-
-    (RESSPECT) >>> pip install -r requirements.txt  
+    (RESSPECT) >> pip install -r requirements.txt  
 
 
 You can now install this package with:  
 
-.. code-block:: bash  
-
     (RESSPECT) >>> python setup.py install  
 
-.. hint:: You may choose to create your virtual environment within the folder of the repository. If you choose to do this, you must remember to exclude the virtual environment directory from version control using e.g., ``.gitignore``.   
+> You may choose to create your virtual environment within the folder of the repository. If you choose to do this, you must remember to exclude the virtual environment directory from version control using e.g., ``.gitignore``.   
 
