@@ -38,13 +38,7 @@ The current version runs in Python-3.7 or higher and it was not tested on Window
 
 We recommend that you work within a [virtual environment](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/).  
  
-To set up the enviroment clone this repository, navigate to its location in the 
-terminal and do::  
-
-
-You will need to install the `Python` package ``virtualenv``. In MacOS or Linux, do  
-
-.. code-block:: bash  
+You will need to install the `Python` package ``virtualenv``. In MacOS or Linux, do::
 
    >>> python3 -m pip install --user virtualenv  
 
