@@ -49,7 +49,7 @@ Next, clone this repository in another chosen location:
 
 .. code-block:: bash
 
-    (RESSPECT) >>> git clone https://github.com/COINtoolbox/ActSNClass
+    (RESSPECT) >>> git clone https://github.com/COINtoolbox/RESSPECT
 
 Navigate to the repository folder and do
 
@@ -170,7 +170,7 @@ material consulted in the construction of this material, we recognize their impo
 Dependencies
 ------------
 
-``actsnclass`` was developed under ``Python3``. The complete list of dependencies is given below:
+``RESSPECT`` was developed under ``Python3``. The complete list of dependencies is given below:
 
  - Python>=3.7
  - matplotlib>=3.1.1
