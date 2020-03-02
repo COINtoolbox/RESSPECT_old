@@ -7,11 +7,9 @@
 
 This repository holds the pipeline developed by the RESSPECT team as part of the inter-collaboration activities develope by the Cosmostatistics Initiative ([COIN](cosmostatistics-initiative.org)) and the LSST Dark Energy Science Collaboration ([DESC](https://lsstdesc.org/)).
 
-This work grew from activities developed within the [COIN Residence Program #4](http://iaacoin.wix.com/crp2017), using as a starting point their [ActSNClass](https://github.com/COINtoolbox/ActSNClass) software.
+This work grew from activities developed within the [COIN Residence Program #4](http://iaacoin.wix.com/crp2017), using as a starting point their [ActSNClass](https://github.com/COINtoolbox/ActSNClass) software. We kindly ask you to include the full citation to the source code if you use this material in your research: [Ishida et al, 2019, MNRAS, 483 (1), 2–18](https://cosmostatistics-initiative.org/wp-content/uploads/2019/06/COIN_ActSNClass.txt).
 
-We kindly ask you to include the full citation to the source code if you use this material in your research: [Ishida et al, 2019, MNRAS, 483 (1), 2–18](https://cosmostatistics-initiative.org/wp-content/uploads/2019/06/COIN_ActSNClass.txt).
-
-Full documentation can be found at [readthedocs](https://actsnclass.readthedocs.io/en/latest/index.html#).
+Full documentation can be found at [readthedocs](https://resspect.readthedocs.io/en/latest/).
 
 # Dependencies
 
