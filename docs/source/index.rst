@@ -14,7 +14,7 @@ This tool allows the constructon of an optimized spectroscopic observation strat
 
 It grew from the work presented in `Ishida et al., 2019 <https://cosmostatistics-initiative.org/portfolio-item/active-learning-for-sn-classification/>`_. We kindly ask you to cite the `original article <https://ui.adsabs.harvard.edu/abs/2019MNRAS.483....2I/exportcitation>`_  in case you use this tool in your research. 
 
-This package includes functionalities specific related to the RESSPECT project needs. 
+This package includes all functionalities of [ActSNClass](https://actsnclass.readthedocs.io/en/latest/) plus a series of others particular to the RESSPECT project needs. A complete list of the new functionalities can be found :ref:`here <Added Features>`.
 
 Getting started
 ===============
