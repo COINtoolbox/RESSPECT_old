@@ -1,0 +1,287 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Welcome to RESSPECT &#8212; RESSPECT 2020 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Feature Extraction" href="pre_processing.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-resspect">
+<h1>Welcome to RESSPECT<a class="headerlink" href="#welcome-to-resspect" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="recommendation-system-for-spectroscopic-follow-up">
+<h2>REcommendation System for SPECTroscopic follow-up<a class="headerlink" href="#recommendation-system-for-spectroscopic-follow-up" title="Permalink to this headline">¶</a></h2>
+<p>This tool allows the constructon of an optimized spectroscopic observation strategy which enables photometric supernova cosmology. It was developed as a collaboration between the LSST DESC and the Cosmostatistics Initiative.</p>
+<p>… This grew from the work presented in <a class="reference external" href="https://cosmostatistics-initiative.org/portfolio-item/active-learning-for-sn-classification/">Ishida et al., 2019</a></p>
+<p>The code has been updated to allow a friendly use and expansion.</p>
+<div class="section" id="getting-started">
+<h3>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h3>
+<p>This code was developed for <code class="docutils literal notranslate"><span class="pre">Python3</span></code> and was not tested in Windows.</p>
+<p>We recommend that you work within a <a class="reference external" href="https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/">virtual environment</a>.</p>
+<p>You will need to install the <cite>Python</cite> package <code class="docutils literal notranslate"><span class="pre">virtualenv</span></code>. In MacOS or Linux, do</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; python3 -m pip install --user virtualenv
+</pre></div>
+</div>
+<p>Navigate to a <code class="docutils literal notranslate"><span class="pre">working_directory</span></code> where you will store the new virtual environment and create it:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; python3 -m venv RESSPECT
+</pre></div>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>Make sure you deactivate any <code class="docutils literal notranslate"><span class="pre">conda</span></code> environment you might have running before moving forward.</p>
+</div>
+<p>Once the environment is set up you can activate it:</p>
+<p>You should see a <code class="docutils literal notranslate"><span class="pre">(RESSPECT)</span></code> flag in the extreme left of terminal command line.</p>
+<p>Next, clone this repository in another chosen location:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>RESSPECT<span class="o">)</span> &gt;&gt;&gt; git clone https://github.com/COINtoolbox/ActSNClass
+</pre></div>
+</div>
+<p>Navigate to the repository folder and do</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>RESSPECT<span class="o">)</span> &gt;&gt;&gt; pip install -r requirements.txt
+</pre></div>
+</div>
+<p>You can now install this package with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>RESSPECT<span class="o">)</span> &gt;&gt;&gt; python setup.py install
+</pre></div>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>You may choose to create your virtual environment within the folder of the repository. If you choose to do this, you must remember to exclude the virtual environment directory from version control using e.g., <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>.</p>
+</div>
+<div class="section" id="setting-up-a-working-directory">
+<h4>Setting up a working directory<a class="headerlink" href="#setting-up-a-working-directory" title="Permalink to this headline">¶</a></h4>
+<p>In a your choosing, create the following directory structure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>work_dir
+├── plots
+├── results
+</pre></div>
+</div>
+<p>The outputs of <code class="docutils literal notranslate"><span class="pre">RESSPECT</span></code> will be stored in these directories.</p>
+<p>In order to set things properly, navigate to the repository you just cloned and move the data directory to your
+chosen working directory and unpack the data.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; mv -rf actsnclass/data/ work_dir/
+&gt;&gt;&gt; <span class="nb">cd</span> work_dir/data
+&gt;&gt;&gt; tar -xzvf SIMGEN_PUBLIC_DES.tar.gz
+</pre></div>
+</div>
+<p>This data was provided by Rick Kessler, after the publication of results from the
+<a class="reference external" href="https://arxiv.org/abs/1008.1024">SuperNova Photometric Classification Challenge</a>.
+It allows you to run tests and validate your installation.</p>
+</div>
+</div>
+<div class="section" id="analysis-steps">
+<h3>Analysis steps<a class="headerlink" href="#analysis-steps" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="images/active_learning_loop.png"><img alt="Active learning loop" class="align-right" src="images/active_learning_loop.png" style="width: 225px; height: 255.6px;" /></a>
+<p>The active learning pipeline is composed of 4 important steps:</p>
+<ol class="arabic simple">
+<li><p>Feature extraction</p></li>
+<li><p>Classifier</p></li>
+<li><p>Query Strategy</p></li>
+<li><p>Metric evaluation</p></li>
+</ol>
+<p>These are arranged in the adaptable learning process (figure to the right).</p>
+<div class="section" id="using-this-package">
+<h4>Using this package<a class="headerlink" href="#using-this-package" title="Permalink to this headline">¶</a></h4>
+<p>Step 1 is considered pre-processing. The current code does the feature extraction
+using the <a class="reference external" href="https://arxiv.org/abs/0904.1066">Bazin parametric function</a> for the complete training and test sample
+before any machine learning application is used.</p>
+<p>Details of the tools available to evaluate different steps on feature extraction can be found in the
+<a class="reference internal" href="pre_processing.html#preprocessing"><span class="std std-ref">Feature extraction page</span></a>.</p>
+<p>Alternatively, you can also perform the full light curve fit for the entire sample from the command line:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; fit_dataset.py -dd &lt;path_to_data_dir&gt; -o &lt;output_file&gt;
+</pre></div>
+</div>
+<p>Once the data has been processed you can apply the full Active Learning loop according to your needs.
+A detail description on how to use this tool is provided in the <a class="reference internal" href="learn_loop.html#learnloop"><span class="std std-ref">Learning Loop page</span></a>.</p>
+<p>The command line option require a few more inputs than the feature extraction stage, but it is also available:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; run_loop.py -i &lt;input features file&gt; -b &lt;batch size&gt; -n &lt;number of loops&gt;
+&gt;&gt;&gt;             -d &lt;output metrics file&gt; -q &lt;output queried sample file&gt;
+&gt;&gt;&gt;             -s &lt;learning strategy&gt; -t &lt;choice of initial training&gt;
+</pre></div>
+</div>
+<p>We also provide detail explanation on how to use this package to produce other stages of the pipeline like:
+<a class="reference internal" href="canonical.html#canonical"><span class="std std-ref">prepare the Canonical sample</span></a>, <a class="reference internal" href="prepare_time_domain.html#timedomain"><span class="std std-ref">prepare data for time domain</span></a> and
+<a class="reference internal" href="plotting.html#plotting"><span class="std std-ref">produce plots</span></a>.</p>
+<p>We also provide detail descriptions on how to contribute with other modules in the
+<a class="reference internal" href="contribute.html#contribute"><span class="std std-ref">How to contribute</span></a> tab.</p>
+<p>Enjoy!!</p>
+<div class="section" id="acknowledgements">
+<h5>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h5>
+<p>This work is heavily based on the first prototype developed  during COIN Residence Program (<a class="reference external" href="https://iaacoin.wixsite.com/crp2017">CRP#4</a>), held in Clermont Ferrand, France, 2017 and financially supported by <a class="reference external" href="https://en.uca.fr/english-version/">Universite Clermont Auvergne</a> and <a class="reference external" href="https://www.auvergnerhonealpes.fr/">La Region Auvergne-Rhone-Alpes</a>. We thank Emmanuel Gangler for encouraging the realization of this event.</p>
+<p>The <a class="reference external" href="https://cosmostatistics-initiative.org">COsmostatistics INitiative (COIN)</a> receives financial support from <a class="reference external" href="http://www.cnrs.fr/">CNRS</a> as part of its MOMENTUM programme over the 2018-2020 period, under the project <em>Active Learning for Large Scale Sky Surveys</em>.</p>
+<p>This work would not be possible without intensive consultation to online platforms and
+discussion forums. Although it is not possible to provide a complete list of the open source
+material consulted in the construction of this material, we recognize their importance and
+<strong>deeply thank everyone who contributes to open learning platforms</strong>.</p>
+</div>
+</div>
+<div class="section" id="dependencies">
+<h4>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">actsnclass</span></code> was developed under <code class="docutils literal notranslate"><span class="pre">Python3</span></code>. The complete list of dependencies is given below:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Python&gt;=3.7</p></li>
+<li><p>matplotlib&gt;=3.1.1</p></li>
+<li><p>numpy&gt;=1.17.0</p></li>
+<li><p>pandas&gt;=0.25.0</p></li>
+<li><p>setuptools&gt;=41.0.1</p></li>
+<li><p>scipy&gt;=1.3.0</p></li>
+<li><p>sklearn&gt;=0.20.3</p></li>
+<li><p>seaborn&gt;=0.9.0</p></li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="table-of-contents">
+<h3>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pre_processing.html">Feature Extraction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pre_processing.html#processing-1-light-curve">Processing 1 Light curve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pre_processing.html#processing-all-light-curves-in-the-data-set">Processing all light curves in the data set</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="canonical.html">Building the Canonical sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prepare_time_domain.html">Prepare data for time domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learn_loop.html">Active Learning loop</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="learn_loop.html#details-on-running-1-loop">Details on running 1 loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="learn_loop.html#running-a-number-of-iterations-in-sequence">Running a number of iterations in sequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="learn_loop.html#the-queryable-sample">The queryable sample</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="learn_loop.html#active-learning-loop-in-time-domain">Active Learning loop in time domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">How to contribute</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contribute.html#add-a-new-data-set">Add a new data set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contribute.html#add-a-new-feature-extraction-method">Add a new feature extraction method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contribute.html#add-a-new-classifier">Add a new classifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contribute.html#add-a-new-query-strategy">Add a new query strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contribute.html#add-a-new-diagnostic-metric">Add a new diagnostic metric</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference / API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reference.html#pre-processing">Pre-processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference.html#canonical-sample">Canonical sample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference.html#build-time-domain-data-base">Build time domain data base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference.html#database">DataBase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference.html#classifiers">Classifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference.html#query-strategies">Query strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference.html#metrics">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference.html#active-learning-loop">Active Learning loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference.html#plotting">Plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference.html#scripts">Scripts</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h3>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">RESSPECT</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pre_processing.html">Feature Extraction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canonical.html">Building the Canonical sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prepare_time_domain.html">Prepare data for time domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learn_loop.html">Active Learning loop</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learn_loop.html#active-learning-loop-in-time-domain">Active Learning loop in time domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">How to contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference / API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="pre_processing.html" title="next chapter">Feature Extraction</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, The RESSPECT team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

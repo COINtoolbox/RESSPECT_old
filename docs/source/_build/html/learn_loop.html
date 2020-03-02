@@ -1,0 +1,293 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Active Learning loop &#8212; RESSPECT 2020 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Plotting" href="plotting.html" />
+    <link rel="prev" title="Prepare data for time domain" href="prepare_time_domain.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="active-learning-loop">
+<span id="learnloop"></span><h1>Active Learning loop<a class="headerlink" href="#active-learning-loop" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="details-on-running-1-loop">
+<h2>Details on running 1 loop<a class="headerlink" href="#details-on-running-1-loop" title="Permalink to this headline">¶</a></h2>
+<p>Once the data has been pre-processed, analysis steps 2-4 can be performed directly using the <code class="docutils literal notranslate"><span class="pre">DataBase</span></code> object.</p>
+<p>For start, we can load the feature information:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">actsnclass</span> <span class="kn">import</span> <span class="n">DataBase</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path_to_features_file</span> <span class="o">=</span> <span class="s1">&#39;results/Bazin.dat&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">DataBase</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="o">.</span><span class="n">load_features</span><span class="p">(</span><span class="n">path_to_features_file</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;Bazin&#39;</span><span class="p">)</span>
+<span class="go">Loaded  21284  samples!</span>
+</pre></div>
+</td></tr></table></div>
+<p>Notice that this data has some pre-determine separation between training and test sample:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;sample&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="go">array([&#39;test&#39;, &#39;train&#39;], dtype=object)</span>
+</pre></div>
+</td></tr></table></div>
+<p>You can choose to start your first iteration of the active learning loop from the original training sample
+flagged int he file OR from scratch. As this is our first example, let’s do the simple thing and start from the original
+training sample. The code below build the respective samples and performs the classification:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="o">.</span><span class="n">build_samples</span><span class="p">(</span><span class="n">initial_training</span><span class="o">=</span><span class="s1">&#39;original&#39;</span><span class="p">,</span> <span class="n">nclass</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">Training set size:  1093</span>
+<span class="go">Test set size:  20191</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;RandomForest&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="o">.</span><span class="n">classprob</span>                        <span class="c1"># check classification probabilities</span>
+<span class="go">array([[0.461, 0.539],</span>
+<span class="go">       [0.346, 0.654],</span>
+<span class="go">       ...,</span>
+<span class="go">       [0.398, 0.602],</span>
+<span class="go">       [0.396, 0.604]])</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>If you wish to start from scratch, just set the <cite>initial_training=N</cite> where <cite>N</cite> is the number of objects in you want in the initial training. The code will then randomly select <cite>N</cite> objects from the entire sample as the initial training sample. It will also impose that at least half of them are SNe Ias.</p>
+</div>
+<p>For a binary classification, the  output from the classifier for each object (line) is presented as a pair of floats, the first column
+corresponding to the probability of the given object being a Ia and the second column its complement.</p>
+<p>Given the output from the classifier we can calculate the metric(s) of choice:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="o">.</span><span class="n">evaluate_classification</span><span class="p">(</span><span class="n">metric_label</span><span class="o">=</span><span class="s1">&#39;snpcc&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">metrics_list_names</span><span class="p">)</span>           <span class="c1"># check metric header</span>
+<span class="go">[&#39;acc&#39;, &#39;eff&#39;, &#39;pur&#39;, &#39;fom&#39;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">metrics_list_values</span><span class="p">)</span>          <span class="c1"># check metric values</span>
+<span class="go">[0.5975434599574068, 0.9024767801857585,</span>
+<span class="go">0.34684684684684686, 0.13572404702012383]</span>
+</pre></div>
+</td></tr></table></div>
+<p>and save results for this one loop to file:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="n">path_to_features_file</span> <span class="o">=</span> <span class="s1">&#39;results/Bazin.dat&#39;</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">metrics_file</span> <span class="o">=</span> <span class="s1">&#39;results/metrics.dat&#39;</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">queried_sample_file</span> <span class="o">=</span> <span class="s1">&#39;results/queried_sample.dat&#39;</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">data</span><span class="o">.</span><span class="n">save_metrics</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">output_metrics_file</span><span class="o">=</span><span class="n">metrics_file</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">data</span><span class="o">.</span><span class="n">save_queried_sample</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">queried_sample_file</span><span class="o">=</span><span class="n">query_file</span><span class="p">,</span>
+<span class="o">&gt;&gt;&gt;</span>                          <span class="n">full_sample</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>You should now have in your <code class="docutils literal notranslate"><span class="pre">results</span></code> directory a <code class="docutils literal notranslate"><span class="pre">metrics.dat</span></code> file which looks like this:</p>
+</div>
+<div class="section" id="running-a-number-of-iterations-in-sequence">
+<h2>Running a number of iterations in sequence<a class="headerlink" href="#running-a-number-of-iterations-in-sequence" title="Permalink to this headline">¶</a></h2>
+<p>We provide a function where all the above steps can be done in sequence for a number of iterations.
+In interactive mode, you must define the required variables and use the <code class="xref py py-mod docutils literal notranslate"><span class="pre">actsnclass.learn_loop</span></code> function:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">actsnclass.learn_loop</span> <span class="kn">import</span>  <span class="n">learn_loop</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nloops</span> <span class="o">=</span> <span class="mi">1000</span>                                  <span class="c1"># number of iterations</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;Bazin&#39;</span>                               <span class="c1"># only option in v1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ml</span> <span class="o">=</span> <span class="s1">&#39;RandomForest&#39;</span>                            <span class="c1"># only option in v1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">strategy</span> <span class="o">=</span> <span class="s1">&#39;RandomSampling&#39;</span>                    <span class="c1"># learning strategy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">input_file</span> <span class="o">=</span> <span class="s1">&#39;results/Bazin.dat&#39;</span>               <span class="c1"># input features file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">diag</span> <span class="o">=</span> <span class="s1">&#39;results/diagnostic.dat&#39;</span>                <span class="c1"># output diagnostic file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">queried</span> <span class="o">=</span> <span class="s1">&#39;results/queried.dat&#39;</span>                <span class="c1"># output query file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train</span> <span class="o">=</span> <span class="s1">&#39;original&#39;</span>                             <span class="c1"># initial training</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">batch</span> <span class="o">=</span> <span class="mi">1</span>                                      <span class="c1"># size of batch</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">learn_loop</span><span class="p">(</span><span class="n">nloops</span><span class="o">=</span><span class="n">nloops</span><span class="p">,</span> <span class="n">features_method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">classifier</span><span class="o">=</span><span class="n">ml</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>           <span class="n">strategy</span><span class="o">=</span><span class="n">strategy</span><span class="p">,</span> <span class="n">path_to_features</span><span class="o">=</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_diag_file</span><span class="o">=</span><span class="n">diag</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>           <span class="n">output_queried_file</span><span class="o">=</span><span class="n">queried</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">train</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>Alternatively you can also run everything from the command line:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; run_loop.py -i &lt;input features file&gt; -b &lt;batch size&gt; -n &lt;number of loops&gt;
+&gt;&gt;&gt;             -d &lt;output metrics file&gt; -q &lt;output queried sample file&gt;
+&gt;&gt;&gt;             -s &lt;learning strategy&gt; -t &lt;choice of initial training&gt;
+</pre></div>
+</div>
+</div>
+<div class="section" id="the-queryable-sample">
+<h2>The queryable sample<a class="headerlink" href="#the-queryable-sample" title="Permalink to this headline">¶</a></h2>
+<p>In the example shown above, when reading the data from the features file there was only 2 possibilities for the
+<cite>sample</cite> variable:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;sample&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="go">array([&#39;test&#39;, &#39;train&#39;], dtype=object)</span>
+</pre></div>
+</td></tr></table></div>
+<p>This corresponds to an unrealistic scenario where we are able to obtain spectra for any object at any time.</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>If you wish to restrict the sample available for querying, just change the <cite>sample</cite> variable to <cite>queryable</cite> for the objects available for querying. Whenever this keywork is encountered in a file of extracted features, the code automatically restricts the query selection to the objects flagged as <cite>queryable</cite>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="active-learning-loop-in-time-domain">
+<h1>Active Learning loop in time domain<a class="headerlink" href="#active-learning-loop-in-time-domain" title="Permalink to this headline">¶</a></h1>
+<p>Considering that you have previously prepared the time domain data, you can run the active learning loop
+in its current form either by using the <code class="xref py py-mod docutils literal notranslate"><span class="pre">actsnclass.time_domain_loop</span></code> or by using the command line
+interface:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; run_time_domain.py -d &lt;first day of survey&gt; &lt;last day of survey&gt;
+&gt;&gt;&gt;        -m &lt;output metrics file&gt; -q &lt;output queried file&gt; -f &lt;features directory&gt;
+&gt;&gt;&gt;        -s &lt;learning strategy&gt; -t &lt;choice of initial training&gt;
+</pre></div>
+</div>
+<p>Make sure you check the full documentation of the module to understand which variables are required depending
+on the case you wish to run.</p>
+<p>For example, to run with SNPCC data, the larges survey interval you can run is between 19 and 182 days,
+the corresponding option will be <cite>-d 19 182</cite>.</p>
+<p>In the example above, if you choose to start from the original training sample, <cite>-t original</cite> you must also
+input the path to the file containing the full light curve analysis - so the full initial training can
+be read. This option corresponds to <cite>-t original -fm &lt;path to full lc features&gt;</cite>.</p>
+<p>More details can be found in the corresponding <a class="reference external" href="https://github.com/COINtoolbox/ActSNClass/blob/master/actsnclass/scripts/run_time_domain.py">docstring</a>.</p>
+<p>Once you ran one or more options, you can use the <code class="xref py py-mod docutils literal notranslate"><span class="pre">actsnclass.plot_results</span></code> module, as described in the <a class="reference internal" href="plotting.html#plotting"><span class="std std-ref">produce plots</span></a> page.
+The result will be something like the plot below (accounting for variations due to initial training).</p>
+<a class="reference internal image-reference" href="images/time_domain.png"><img alt="Example of time domain output." class="align-center" src="images/time_domain.png" style="width: 640px; height: 448px;" /></a>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>At this point there is no <cite>Canonical sample</cite> option implemented for the time domain module.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">RESSPECT</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pre_processing.html">Feature Extraction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canonical.html">Building the Canonical sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prepare_time_domain.html">Prepare data for time domain</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Active Learning loop</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#details-on-running-1-loop">Details on running 1 loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-a-number-of-iterations-in-sequence">Running a number of iterations in sequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-queryable-sample">The queryable sample</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#active-learning-loop-in-time-domain">Active Learning loop in time domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">How to contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference / API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="prepare_time_domain.html" title="previous chapter">Prepare data for time domain</a></li>
+      <li>Next: <a href="plotting.html" title="next chapter">Plotting</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, The RESSPECT team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/learn_loop.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

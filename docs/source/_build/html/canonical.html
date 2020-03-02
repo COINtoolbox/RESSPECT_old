@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Building the Canonical sample &#8212; RESSPECT 2020 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Prepare data for time domain" href="prepare_time_domain.html" />
+    <link rel="prev" title="Feature Extraction" href="pre_processing.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="building-the-canonical-sample">
+<span id="canonical"></span><h1>Building the Canonical sample<a class="headerlink" href="#building-the-canonical-sample" title="Permalink to this headline">¶</a></h1>
+<p>According to the nomenclature used in <a class="reference external" href="https://arxiv.org/pdf/1804.03765.pdf">Ishida et al., 2019</a>, the Canonical
+sample is a subset of the test sample chosen to hold the same characteristics of the training sample. It was used
+to mimic the effect of continuously adding elements to the training sample under the traditional strategy.</p>
+<p>It was constructed using the following steps:</p>
+<ol class="arabic simple">
+<li><p>From the raw light curve files, build a metadata matrix containing:
+<code class="docutils literal notranslate"><span class="pre">[snid,</span> <span class="pre">sample,</span> <span class="pre">sntype,</span> <span class="pre">z,</span> <span class="pre">g_pkmag,</span> <span class="pre">r_pkmag,</span> <span class="pre">i_pkmag,</span> <span class="pre">z_pkmag,</span> <span class="pre">g_SNR,</span> <span class="pre">r_SNR,</span> <span class="pre">i_SNR,</span> <span class="pre">z_SNR]</span></code>
+where <code class="docutils literal notranslate"><span class="pre">z</span></code> corresponds to redshift, <code class="docutils literal notranslate"><span class="pre">x_pkmag</span></code> is the simulated peak magnitude and <code class="docutils literal notranslate"><span class="pre">x_SNR</span></code>
+denotes the mean SNR, both in filter x;</p></li>
+<li><p>Separate original training and test set in 3 subsets according to SN type: [Ia, Ibc, II];</p></li>
+<li><p>For each object in the training sample, find its nearest neighbor within objects of the test sample of the
+same SN type and considering the photometric parameter space built in step 1.</p></li>
+</ol>
+<p>This will allow you to construct a Canonical sample holding the same characteristics and size of the original training sample
+but composed of different objects.</p>
+<p><code class="docutils literal notranslate"><span class="pre">actsnclass</span></code> allows you to perform this task using the py:mod:<cite>actsnclass.build_snpcc_canonical</cite> module:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">snactclass</span> <span class="kn">import</span> <span class="n">build_snpcc_canonical</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># define variables</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data_dir</span> <span class="o">=</span> <span class="s1">&#39;data/SIMGEN_PUBLIC_DES/&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output_sample_file</span> <span class="o">=</span> <span class="s1">&#39;results/Bazin_SNPCC_canonical.dat&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output_metadata_file</span> <span class="o">=</span> <span class="s1">&#39;results/Bazin_metadata.dat&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features_file</span> <span class="o">=</span> <span class="s1">&#39;results/Bazin.dat&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sample</span> <span class="o">=</span> <span class="n">build_snpcc_canonical</span><span class="p">(</span><span class="n">path_to_raw_data</span><span class="p">:</span> <span class="n">data_dir</span><span class="p">,</span> <span class="n">path_to_features</span><span class="o">=</span><span class="n">features_file</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                              <span class="n">output_canonical_file</span><span class="o">=</span><span class="n">output_sample_file</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                              <span class="n">output_info_file</span><span class="o">=</span><span class="n">output_metadata_file</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                              <span class="n">compute</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>Once the samples is constructed you can compare the distribution in <code class="docutils literal notranslate"><span class="pre">[z,</span> <span class="pre">g_pkmag,</span> <span class="pre">r_pkmag]</span></code> with a plot:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">actsnclass</span> <span class="kn">import</span> <span class="n">plot_snpcc_train_canonical</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_snpcc_train_canonical</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">output_plot_file</span><span class="o">=</span><span class="s1">&#39;plots/compare_canonical_train.png&#39;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<a class="reference internal image-reference" href="images/canonical.png"><img alt="Comparison between original training and canonical samples." class="align-center" src="images/canonical.png" style="width: 640px; height: 224px;" /></a>
+<p>In the command line, using the same parameters as in the code above, you can do all at once:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; build_canonical.py -c &lt;<span class="k">if</span> True compute metadata&gt;
+&gt;&gt;&gt;       -d &lt;path to raw data dir&gt;
+&gt;&gt;&gt;       -f &lt;input features file&gt; -m &lt;output file <span class="k">for</span> metadata&gt;
+&gt;&gt;&gt;       -o &lt;output file <span class="k">for</span> canonical sample&gt; -p &lt;comparison plot file&gt;
+&gt;&gt;&gt;       -s &lt;<span class="k">if</span> True save metadata to file&gt;
+</pre></div>
+</div>
+<p>You can check that the file <code class="docutils literal notranslate"><span class="pre">results/Bazin_SNPCC_canonical.dat</span></code> is very similar to the original features file.
+The only difference is that now a few of the <code class="docutils literal notranslate"><span class="pre">sample</span></code> variables are set to <code class="docutils literal notranslate"><span class="pre">queryable</span></code>:</p>
+<p>This means that you can use the <code class="xref py py-mod docutils literal notranslate"><span class="pre">actsnclass.learn_loop</span></code> module in combination with a <code class="docutils literal notranslate"><span class="pre">RandomSampling</span></code> strategy but
+reading data from the canonical sample. In this way, at each iteration the code will select a random object from the test sample
+but a query will only be made is the selected object belongs to the canonical sample.</p>
+<p>In the command line, this looks like:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; run_loop.py -i results/Bazin_SNPCC_canonical.dat -b &lt;batch size&gt; -n &lt;number of loops&gt;
+&gt;&gt;&gt;             -d &lt;output metrics file&gt; -q &lt;output queried sample file&gt;
+&gt;&gt;&gt;             -s RandomSampling -t &lt;choice of initial training&gt;
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">RESSPECT</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pre_processing.html">Feature Extraction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Building the Canonical sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prepare_time_domain.html">Prepare data for time domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learn_loop.html">Active Learning loop</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learn_loop.html#active-learning-loop-in-time-domain">Active Learning loop in time domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">How to contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference / API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="pre_processing.html" title="previous chapter">Feature Extraction</a></li>
+      <li>Next: <a href="prepare_time_domain.html" title="next chapter">Prepare data for time domain</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, The RESSPECT team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/canonical.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

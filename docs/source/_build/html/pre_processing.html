@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Feature Extraction &#8212; RESSPECT 2020 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Building the Canonical sample" href="canonical.html" />
+    <link rel="prev" title="Welcome to RESSPECT" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="feature-extraction">
+<span id="preprocessing"></span><h1>Feature Extraction<a class="headerlink" href="#feature-extraction" title="Permalink to this headline">¶</a></h1>
+<p>The first stage in consists in transforming the raw data into a uniform data matrix which will subsequently be given
+as input to the learning algorithm.</p>
+<p>The current implementation of <code class="docutils literal notranslate"><span class="pre">actsnclass</span></code> text-like data from the SuperNova Photometric Classification Challenge
+(SNPCC) which is described in <a class="reference external" href="https://arxiv.org/abs/1008.1024">Kessler et al., 2010</a>.</p>
+<div class="section" id="processing-1-light-curve">
+<h2>Processing 1 Light curve<a class="headerlink" href="#processing-1-light-curve" title="Permalink to this headline">¶</a></h2>
+<p>The raw data looks like this:</p>
+<p>You can load this data using:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">actsnclass.fit_lightcurves</span> <span class="kn">import</span> <span class="n">LightCurve</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path_to_lc</span> <span class="o">=</span> <span class="s1">&#39;data/SIMGEN_PUBLIC_DES/DES_SN848233.DAT&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lc</span> <span class="o">=</span> <span class="n">LightCurve</span><span class="p">()</span>                        <span class="c1"># create light curve instance</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lc</span><span class="o">.</span><span class="n">load_snpcc_lc</span><span class="p">(</span><span class="n">path_to_lc</span><span class="p">)</span>             <span class="c1"># read data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lc</span><span class="o">.</span><span class="n">photometry</span>                            <span class="c1"># check structure of photometry</span>
+<span class="go">          mjd band     flux  fluxerr   SNR</span>
+<span class="go"> 0    56194.145    g   7.600    4.680   1.62</span>
+<span class="go"> 1    56194.156    r   3.875    2.752   1.41</span>
+<span class="go"> ...        ...  ...      ...      ...   ...</span>
+<span class="go"> 106  56348.008    z  70.690    6.706  10.54</span>
+<span class="go"> 107  56348.996    g  26.000    5.581   4.66</span>
+<span class="go"> [108 rows x 5 columns]</span>
+</pre></div>
+</td></tr></table></div>
+<p>Once the data is loaded, you can fit each individual filter to the parametric function proposed by
+<a class="reference external" href="https://arxiv.org/abs/0904.1066">Bazin et al., 2009</a> in one specific filter.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rband_features</span> <span class="o">=</span> <span class="n">lc</span><span class="o">.</span><span class="n">fit_bazin</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">rband_features</span><span class="p">)</span>
+<span class="go">[159.25796385, -13.39398527,  55.16210333, 111.81204143, -20.13492354]</span>
+</pre></div>
+</td></tr></table></div>
+<p>The designation for each parameter are stored in:</p>
+<p>It is possible to perform the fit in all filters at once and visualize the result using:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lc</span><span class="o">.</span><span class="n">fit_bazin_all</span><span class="p">()</span>                            <span class="c1"># perform Bazin fit in all filters</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lc</span><span class="o">.</span><span class="n">plot_bazin_fit</span><span class="p">(</span><span class="n">save</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+<span class="go">                      output_file=&#39;plots/SN&#39; + str(lc.id) + &#39;.png&#39;)   # save to file</span>
+</pre></div>
+</td></tr></table></div>
+<a class="reference internal image-reference" href="images/SN848233.png"><img alt="Bazing fit to light curve." class="align-center" src="images/SN848233.png" style="width: 640px; height: 480px;" /></a>
+</div>
+<div class="section" id="processing-all-light-curves-in-the-data-set">
+<h2>Processing all light curves in the data set<a class="headerlink" href="#processing-all-light-curves-in-the-data-set" title="Permalink to this headline">¶</a></h2>
+<p>There are 2 way to perform the Bazin fits for the entire SNPCC data set. Using a python interpreter,</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">actsnclass</span> <span class="kn">import</span> <span class="n">fit_snpcc_bazin</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path_to_data_dir</span> <span class="o">=</span> <span class="s1">&#39;data/SIMGEN_PUBLIC_DES/&#39;</span>            <span class="c1"># raw data directory</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output_file</span> <span class="o">=</span> <span class="s1">&#39;results/Bazin.dat&#39;</span>                              <span class="c1"># output file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit_snpcc_bazin</span><span class="p">(</span><span class="n">path_to_data_dir</span><span class="o">=</span><span class="n">path_to_data_dir</span><span class="p">,</span> <span class="n">features_file</span><span class="o">=</span><span class="n">output_file</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>The above will produce a file called <code class="docutils literal notranslate"><span class="pre">Bazin.dat</span></code> in the <cite>results</cite> directory.</p>
+<p>The same result can be achieved using the command line:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&gt;&gt; fit_dataset.py -dd &lt;path_to_data_dir&gt; -o &lt;output_file&gt;
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">RESSPECT</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Feature Extraction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#processing-1-light-curve">Processing 1 Light curve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#processing-all-light-curves-in-the-data-set">Processing all light curves in the data set</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="canonical.html">Building the Canonical sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prepare_time_domain.html">Prepare data for time domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learn_loop.html">Active Learning loop</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learn_loop.html#active-learning-loop-in-time-domain">Active Learning loop in time domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">How to contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference / API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to RESSPECT</a></li>
+      <li>Next: <a href="canonical.html" title="next chapter">Building the Canonical sample</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, The RESSPECT team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/pre_processing.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
