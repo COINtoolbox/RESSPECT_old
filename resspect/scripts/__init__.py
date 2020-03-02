@@ -16,12 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .build_canonical import main as build_canonical
-from .build_time_domain import main as build_time_domain
-from .fit_dataset import main as fit_dataset
-from .make_diagnostic_plots import main as make_diagnostic_plots
-from .run_loop import main as run_loop
-from .run_time_domain import main as run_time_domain
+from actsnclass.scritps.build_canonical import main as build_canonical
+from actsnclass.scritps.build_time_domain import main as build_time_domain
+from actsnclass.scritps.fit_dataset import main as fit_dataset
+from actsnclass.scritps.make_diagnostic_plots import main as make_diagnostic_plots
+from actsnclass.scritps.run_loop import main as run_loop
+from actsnclass.scritps.run_time_domain import main as run_time_domain
 
 
 __all__ = ['build_canonical',
