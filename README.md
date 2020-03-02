@@ -38,11 +38,11 @@ The current version runs in Python-3.7 or higher and it was not tested on Window
 
 We recommend that you work within a [virtual environment](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/).  
  
-You will need to install the `Python` package ``virtualenv``. In MacOS or Linux, do::
+You will need to install the `Python` package ``virtualenv``. In MacOS or Linux, do
 
-   >> python3 -m pip install --user virtualenv  
+    >> python3 -m pip install --user virtualenv
 
-Navigate to a ``env_directory`` where you will store the new virtual environment and create it::
+Navigate to a ``env_directory`` where you will store the new virtual environment and create it  
 
     >> python3 -m venv RESSPECT  
 
