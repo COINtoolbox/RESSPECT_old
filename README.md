@@ -37,23 +37,54 @@ Full documentation can be found at [readthedocs](https://actsnclass.readthedocs.
 
 # Install
 
-The current version runs in Python-3.7.
+The current version runs in Python-3.7 or higher and it was not tested on Windows.  
 
-We recommend you use anaconda to create a suitable environment.
-
+We recommend that you work within a `virtual environment <https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/>`_.  
+ 
 To set up the enviroment clone this repository, navigate to its location in the 
 terminal and do::  
 
-    >> conda env create -f environment.yml
 
-Once the environment is created, activate it using::
+You will need to install the `Python` package ``virtualenv``. In MacOS or Linux, do  
 
-    >> conda activate ActSNClass
-    
-You will notice a `(ActSNCLass)` to the left of your terminal line.
-This means everything is ok!
+.. code-block:: bash  
 
-In order to install this code you should clone this repository and do::  
+   >>> python3 -m pip install --user virtualenv  
 
-    (ActSNClass) >> python setup.py install
+Navigate to a ``env_directory`` where you will store the new virtual environment and create it:  
+
+.. code-block:: bash  
+
+    >>> python3 -m venv RESSPECT  
+
+.. hint:: Make sure you deactivate any ``conda`` environment you might have running before moving forward.   
+
+Once the environment is set up you can activate it:  
+
+.. code-block::bash  
+
+   >>> source <env_directory>/bin/activate  
+
+You should see a ``(RESSPECT)`` flag in the extreme left of terminal command line.   
+
+Next, clone this repository in another chosen location:  
+
+.. code-block:: bash  
+
+    (RESSPECT) >>> git clone https://github.com/COINtoolbox/RESSPECT.git  
+
+Navigate to the repository folder and do  
+
+.. code-block:: bash  
+
+    (RESSPECT) >>> pip install -r requirements.txt  
+
+
+You can now install this package with:  
+
+.. code-block:: bash  
+
+    (RESSPECT) >>> python setup.py install  
+
+.. hint:: You may choose to create your virtual environment within the folder of the repository. If you choose to do this, you must remember to exclude the virtual environment directory from version control using e.g., ``.gitignore``.   
 
