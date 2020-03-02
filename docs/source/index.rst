@@ -12,9 +12,9 @@ REcommendation System for SPECTroscopic follow-up
 
 This tool allows the constructon of an optimized spectroscopic observation strategy which enables photometric supernova cosmology. It was developed as a collaboration between the LSST DESC and the Cosmostatistics Initiative.
 
-... This grew from the work presented in `Ishida et al., 2019 <https://cosmostatistics-initiative.org/portfolio-item/active-learning-for-sn-classification/>`_ 
+It grew from the work presented in `Ishida et al., 2019 <https://cosmostatistics-initiative.org/portfolio-item/active-learning-for-sn-classification/>`_. We kindly ask you to cite the `original article <https://ui.adsabs.harvard.edu/abs/2019MNRAS.483....2I/exportcitation>`_  in case you use this tool in your research. 
 
-The code has been updated to allow a friendly use and expansion.
+This package includes functionalities specific related to the RESSPECT project needs. 
 
 Getting started
 ===============
@@ -85,7 +85,7 @@ chosen working directory and unpack the data.
 
 .. code-block:: bash
 
-    >>> mv -rf actsnclass/data/ work_dir/
+    >>> mv -rf resspect/data/ work_dir/
     >>> cd work_dir/data
     >>> tar -xzvf SIMGEN_PUBLIC_DES.tar.gz
 
@@ -158,7 +158,7 @@ Enjoy!!
 Acknowledgements
 ****************
 
-This work is heavily based on the first prototype developed  during COIN Residence Program (`CRP#4 <https://iaacoin.wixsite.com/crp2017>`_), held in Clermont Ferrand, France, 2017 and financially supported by `Universite Clermont Auvergne <https://en.uca.fr/english-version/>`_ and `La Region Auvergne-Rhone-Alpes <https://www.auvergnerhonealpes.fr/>`_. We thank Emmanuel Gangler for encouraging the realization of this event.
+This work is heavily based on the first prototype developed  during COIN Residence Program (`CRP#4 <https://iaacoin.wixsite.com/crp2017>`_), held in Clermont Ferrand, France, 2017.
 
 The `COsmostatistics INitiative (COIN) <https://cosmostatistics-initiative.org>`_ receives financial support from `CNRS <http://www.cnrs.fr/>`_ as part of its MOMENTUM programme over the 2018-2020 period, under the project *Active Learning for Large Scale Sky Surveys*.
 
