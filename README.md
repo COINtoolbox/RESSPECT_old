@@ -1,9 +1,6 @@
 [![resspect](https://img.shields.io/badge/Focus-RESSPECT-red)](http://cosmostatistics-initiative.org/resspect/)
-[comment]: <> ([![Paper DOI](https://img.shields.io/badge/Paper%20DOI-10.1093%2Fmnras%2Fsty3015-green)](https://doi.org/10.1093/mnras/sty3015)) 
-[comment]: <> ([![arXiv](https://img.shields.io/badge/arxiv-astro--ph%2F1804.03765-red)](https://arxiv.org/abs/1804.03765)) 
 
-
-# <img align="right" src="docs/images/COIN_logo_very_small.png" width="350"> ActSNClass
+# <img align="right" src="docs/images/logo_small.png" width="350"> ActSNClass
 
 
 ## Active Learning for Supernova Photometric Classification 
