@@ -52,6 +52,10 @@ class DataBase:
         Header for metadata.
     metrics_list_names: list
         Values for metric elements.
+    nn: int
+        Number of nearest neighbors for knn.
+    ntrees: int
+        Number of trees for Random Forest.
     plasticc_mjd_lim: list
         [min, max] mjds for plasticc data
     predicted_class: np.array
@@ -154,6 +158,8 @@ class DataBase:
         self.metadata_names = []
         self.metrics_list_names = []
         self.metrics_list_values = []
+        self.nn = 10
+        self.ntrees = 1000
         self.predicted_class = np.array([])
         self.queried_sample = []
         self.queryable_ids = np.array([])
@@ -308,8 +314,7 @@ class DataBase:
         
 
     def load_features(self, path_to_file: str, method='Bazin', screen=False,
-                      survey='DES', sample=None, #from_file=True
-                      ):
+                      survey='DES', sample=None):
         """Load features according to the chosen feature extraction method.
 
         Populates properties: data, features, feature_list, header
@@ -333,21 +338,13 @@ class DataBase:
         sample: str (optional)
             If None, sample is given by a column within the given file.
             else, read independent files for 'train' and 'test'.
-            Default is None.
-        #from_file: bool (optional)
-        #    If True, reads data always from files.
-        #    Else separate data on the fly. 
-	#    Default is True. 
         """
 
-        if method == 'Bazin' and from_file:
+        if method == 'Bazin':
             self.load_bazin_features(path_to_file, screen=screen,
                                      survey=survey, sample=sample)
 
-        #elif method == 'Bazin' and not from_file:
-        #    self.load_bazin_onthefly(path_to_file, )
-
-        elif method == 'photometry' and from_file:
+        elif method == 'photometry':
             self.load_photometry_features(path_to_file, screen=screen,
                                           survey=survey, sample=sample)
         else:
@@ -427,9 +424,9 @@ class DataBase:
             from independent files.
         """
 
-        if 'id' in self.train_metadata.keys():
+        if 'id' in self.metadata.keys():
             id_name = 'id'
-        elif 'objid' in self.train_metadata.keys():
+        elif 'objid' in self.metadata.keys():
             id_name = 'objid'
             
         # separate original training and test samples
@@ -596,10 +593,15 @@ class DataBase:
         if method == 'RandomForest':
             self.predicted_class,  self.classprob = \
                 random_forest(self.train_features, self.train_labels,
-                              self.test_features)
+                              self.test_features, nest=self.ntrees)
+
+        if method == 'knn':
+            self.predicted_class,  self.classprob = \
+                knn(self.train_features, self.train_labels,
+                    self.test_features, nneighbors=self.nn)
 
         else:
-            raise ValueError('Only RandomForest classifier is implemented!'
+            raise ValueError('Only RandomForest and knn classifiers are implemented!'
                              '\n Feel free to add other options.')
 
     def evaluate_classification(self, metric_label='snpcc'):
@@ -621,7 +623,7 @@ class DataBase:
             raise ValueError('Only snpcc metric is implemented!'
                              '\n Feel free to add other options.')
 
-    def make_query(self, strategy='UncSampling', batch=1,
+    def make_query(self, strategy='UncSampling', batch=1, perc=0.1,
                    dump=False) -> list:
         """Identify new object to be added to the training sample.
 
@@ -635,6 +637,12 @@ class DataBase:
         batch: int (optional)
             Number of objects to be chosen in each batch query.
             Default is 1.
+
+        perc: float in [0,1] (optional)
+            Uncertainty percentile chosen for query.
+            Only used for PercentileSampling.
+            Default is 0.1.
+
         dump: bool (optional)
             If true, display on screen information about the
             displacement in order and classificaion probability due to
@@ -671,9 +679,21 @@ class DataBase:
 
             return query_indx
 
+        elif strategy == 'PercentileSampling':
+            query_indx = percentile_sampling(class_prob=self.classprob,
+                                         queryable_ids=self.queryable_ids,
+                                         test_ids=self.test_metadata[id_name].values,
+                                         perc=perc)
+
+            for n in query_indx:
+                if self.test_metadata[id_name].values[n] not in self.queryable_ids:
+                    raise ValueError('Chosen object is not available for query!')
+
+            return query_indx
+
         else:
-            raise ValueError('Invalid strategy. Only "UncSampling" and '
-                             '"RandomSampling are implemented! \n '
+            raise ValueError('Invalid strategy. Only "UncSampling", '
+                             '"RandomSampling and PercentileSampling are implemented! \n '
                              'Feel free to add other options. ')
 
     def update_samples(self, query_indx: list, loop: int, epoch=0):

@@ -24,7 +24,7 @@ from sklearn.neighbors import KNeighborsClassifier
 
 
 def knn(train_features:  np.array, train_labels: np.array,
-                  test_features: np.array, nneighbors=10, seed=42):
+                  test_features: np.array, nneighbors=10):
     """Random Forest classifier.
 
     Parameters
@@ -50,7 +50,7 @@ def knn(train_features:  np.array, train_labels: np.array,
     """
 
     # create classifier instance
-    clf = KNeighborsClassifier(n_neighbors=nneighbors, random_state=seed)
+    clf = KNeighborsClassifier(n_neighbors=nneighbors)
     clf.fit(train_features, train_labels)                     # train
     predictions = clf.predict(test_features)                # predict
     prob = clf.predict_proba(test_features)       # get probabilities

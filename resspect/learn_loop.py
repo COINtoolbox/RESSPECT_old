@@ -25,7 +25,7 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
                output_diag_file: str, output_queried_file: str,
                features_method='Bazin', classifier='RandomForest',
                training='original', batch=1, screen=True, survey='DES',
-               nclass=2):
+               perc=0.1, nclass=2):
     """Perform the active learning loop. All results are saved to file.
 
     Parameters
@@ -61,6 +61,10 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
     survey: str (optional)
         'DES' or 'LSST'. Default is 'DES'.
         Name of the survey which characterizes filter set.
+    perc: float in [0,1] (optioal)
+        Percentile chosen to identify the new query. 
+        Only used for PercentileSampling. 
+        Default is 0.1.
     nclass: int (optional)
         Number of classes to consider in the classification
         Currently only nclass == 2 is implemented.    
@@ -100,7 +104,7 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
         data.evaluate_classification()
 
         # choose object to query
-        indx = data.make_query(strategy=strategy, batch=batch)
+        indx = data.make_query(strategy=strategy, batch=batch, perc=perc)
 
         # update training and test samples
         data.update_samples(indx, loop=loop)

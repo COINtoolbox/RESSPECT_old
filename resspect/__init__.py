@@ -23,7 +23,6 @@ from actsnclass.classifiers import *
 from actsnclass.learn_loop import *
 from actsnclass.metrics import *
 from actsnclass.query_strategies import *
-from actsnclass.plot_results import *
 from actsnclass.scripts.build_canonical import main as build_canonical
 from actsnclass.scripts.build_time_domain import main as build_time_domain
 from actsnclass.scripts.fit_dataset import main as fit_dataset
@@ -35,6 +34,7 @@ from actsnclass.time_domain_loop import get_original_training
 
 from .database import *
 from .fit_lightcurves import *
+from .plot_results import *
 from .time_domain_PLAsTiCC import *
 
 
@@ -56,6 +56,7 @@ __all__ = ['accuracy',
            'learn_loop',
            'LightCurve',
            'make_diagnostic_plots',
+           'perc_sampling',
            'PLAsTiCCPhotometry',
            'plot_snpcc_train_canonical',
            'purity',
