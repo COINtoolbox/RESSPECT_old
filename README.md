@@ -39,7 +39,7 @@ Full documentation can be found at [readthedocs](https://actsnclass.readthedocs.
 
 The current version runs in Python-3.7 or higher and it was not tested on Windows.  
 
-We recommend that you work within a `virtual environment <https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/>`_.  
+We recommend that you work within a [virtual environment](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/).  
  
 To set up the enviroment clone this repository, navigate to its location in the 
 terminal and do::  
