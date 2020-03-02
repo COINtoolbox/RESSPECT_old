@@ -16,9 +16,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import io
 import numpy as np
 import os
 import pandas as pd
+import tarfile
 
 from actsnclass.classifiers import random_forest
 from actsnclass.query_strategies import uncertainty_sampling, random_sampling
@@ -47,19 +49,21 @@ class DataBase:
         Header for metadata.
     metrics_list_names: list
         Values for metric elements.
+    plasticc_mjd_lim: list
+        [min, max] mjds for plasticc data
     predicted_class: np.array
         Predicted classes - results from ML classifier.
     queried_sample: list
         Complete information of queried objects.
     queryable_ids: np.array()
         Flag for objects available to be queried.
-    test_features: pd.DataFrame
+    test_features: np.array()
         Features matrix for the test sample.
     test_metadata: pd.DataFrame
         Metadata for the test sample
     test_labels: np.array()
         True classification for the test sample.
-    train_features: pd.DataFrame
+    train_features: np.array()
         Features matrix for the train sample.
     train_metadata: pd.DataFrame
         Metadata for the training sample.
@@ -70,6 +74,10 @@ class DataBase:
     -------
     load_bazin_features(path_to_bazin_file: str)
         Load Bazin features from file
+    load_photometry_features(path_to_photometry_file:str)
+        Load photometric light curves from file
+    load_plasticc_mjd(path_to_data_dir: str)
+        Get min and max mjds for PLAsTiCC data
     load_features(path_to_file: str, method: str)
         Load features according to the chosen feature extraction method.
     build_samples(initial_training: str or int, nclass: int)
@@ -153,11 +161,12 @@ class DataBase:
         self.train_metadata = pd.DataFrame()
         self.train_labels = np.array([])
 
-    def load_bazin_features(self, path_to_bazin_file: str, screen=False):
+    def load_bazin_features(self, path_to_bazin_file: str, screen=False,
+                            survey='DES', sample=None):
         """Load Bazin features from file.
 
-        Populate properties: data, features, feature_list, header
-        and header_list.
+        Populate properties: features, feature_names, metadata
+        and metadata_names.
 
         Parameters
         ----------
@@ -166,27 +175,138 @@ class DataBase:
         screen: bool (optional)
             If True, print on screen number of light curves processed.
             Default is False.
+        survey: str (optional)
+            Name of survey. Used to infer the filter set.
+	    Options are DES or LSST. Default is DES.
+        sample: str (optional)
+            If None, sample is given by a column within the given file.
+            else, read independent files for 'train' and 'test'.
+            Default is None.
         """
 
         # read matrix with Bazin features
-        self.data = pd.read_csv(path_to_bazin_file, sep=' ', index_col=False)
+        if '.tar.gz' in path_to_bazin_file:
+            tar = tarfile.open(path_to_bazin_file, 'r:gz')
+            fname = tar.getmembers()[0]
+            content = tar.extractfile(fname).read()
+            data = pd.read_csv(io.BytesIO(content))
+            tar.close()
+            
+        else:
+            data = pd.read_csv(path_to_bazin_file, index_col=False)
+            if ' ' in data.keys()[0]:
+                data = pd.read_csv(path_to_bazin_file, sep=' ', index_col=False)
 
         # list of features to use
-        self.features_names = ['gA', 'gB', 'gt0', 'gtfall', 'gtrise', 'rA',
-                               'rB', 'rt0', 'rtfall', 'rtrise', 'iA', 'iB',
-                               'it0', 'itfall', 'itrise', 'zA', 'zB', 'zt0',
-                               'ztfall', 'ztrise']
+        if survey == 'DES':
+            self.features_names = ['gA', 'gB', 'gt0', 'gtfall', 'gtrise', 'rA',
+                                   'rB', 'rt0', 'rtfall', 'rtrise', 'iA', 'iB',
+                                   'it0', 'itfall', 'itrise', 'zA', 'zB', 'zt0',
+                                   'ztfall', 'ztrise']
+            self.metadata_names = ['id', 'redshift', 'type', 'code', 'sample']
 
-        self.metadata_names = ['id', 'redshift', 'type', 'code', 'sample']
+        elif survey == 'LSST':
+            self.features_names = ['uA', 'uB', 'ut0', 'utfall', 'utrise',
+                                   'gA', 'gB', 'gt0', 'gtfall', 'gtrise',
+                                   'rA', 'rB', 'rt0', 'rtfall', 'rtrise',
+                                   'iA', 'iB', 'it0', 'itfall', 'itrise',
+                                   'zA', 'zB', 'zt0', 'ztfall', 'ztrise',
+                                   'YA', 'YB', 'Yt0', 'Ytfall', 'Ytrise']
 
-        self.features = self.data[self.features_names]
-        self.metadata = self.data[self.metadata_names]
+            self.metadata_names = ['objid', 'redshift', 'type', 'code', 'sample']
+        else:
+            raise ValueError('Only "DES" and "LSST" filters are implemented at this point!')
 
-        if screen:
-            print('Loaded ', self.metadata.shape[0], ' samples!')
+        if sample == None:
+            self.features = data[self.features_names]
+            self.metadata = data[self.metadata_names]
 
-    def load_features(self, path_to_file: str, method='Bazin',
-                      screen=False):
+            if screen:
+                print('Loaded ', self.metadata.shape[0], ' samples!')
+
+        elif sample == 'train':
+            self.train_features = data[self.features_names].values
+            self.train_metadata = data[self.metadata_names]
+
+            if screen:
+                print('Loaded ', self.train_metadata.shape[0], ' ' +  sample + ' samples!')
+
+        elif sample == 'test':
+            self.test_features = data[self.features_names].values
+            self.test_metadata = data[self.metadata_names]
+
+            if screen:
+                print('Loaded ', self.test_metadata.shape[0], ' ' + sample +  ' samples!')
+
+    def load_photometry_features(self, path_to_photometry_file: str,
+                                 screen=False, sample=None):
+        """Load photometry features from file.
+
+        Gets as input file containing fitted flux in homogeneized cadences.
+        Each line of the file is 1 object with concatenated fitted flux values.
+        Populate properties: data, features, feature_list, header
+        and header_list.
+
+        Parameters
+        ----------
+        path_to_photometry_file: str
+            Complete path to photometry features file.
+        screen: bool (optional)
+            If True, print on screen number of light curves processed.
+            Default is False.
+        sample: str (optional)
+            If None, sample is given by a column within the given file.
+            else, read independent files for 'train' and 'test'.
+            Default is None.
+        """
+
+        # read matrix with Bazin features
+        if '.tar.gz' in path_to_photometry_file:
+            tar = tarfile.open(path_to_photometry_file, 'r:gz')
+            fname = tar.getmembers()[0]
+            content = tar.extractfile(fname).read()
+            data = pd.read_csv(io.BytesIO(content))
+            tar.close()
+        else:
+            data = pd.read_csv(path_to_photometry_file, index_col=False)
+            if ' ' in data.keys()[0]:
+                data = pd.read_csv(path_to_photometry_file, sep=' ', index_col=False)
+        
+        # list of features to use
+        self.features_names = data.keys()[5:]
+
+        if 'objid' in data.keys():
+            id_name = 'objid'
+        elif 'id' in data.keys():
+            id_name = 'id'
+            
+        self.metadata_names = [id_name, 'redshift', 'type', 'code', 'sample']
+
+        if sample == None:
+            self.features = data[self.features_names]
+            self.metadata = data[self.metadata_names]
+
+            if screen:
+                print('Loaded ', self.metadata.shape[0], ' samples!')
+
+        elif sample == 'train':
+            self.train_features = data[self.features_names].values
+            self.train_metadata = data[self.metadata_names]
+
+            if screen:
+                print('Loaded ', self.train_metadata.shape[0], ' samples!')
+
+        elif sample == 'test':
+            self.test_features = data[self.features_names].values
+            self.test_metadata = data[self.metadata_names]
+
+            if screen:
+                print('Loaded ', self.test_metadata.shape[0], ' samples!')
+        
+
+    def load_features(self, path_to_file: str, method='Bazin', screen=False,
+                      survey='DES', sample=None, #from_file=True
+                      ):
         """Load features according to the chosen feature extraction method.
 
         Populates properties: data, features, feature_list, header
@@ -198,20 +318,83 @@ class DataBase:
             Complete path to features file.
         method: str (optional)
             Feature extraction method. The current implementation only
-            accepts method=='Bazin'
+            accepts method=='Bazin' or 'photometry'.
+            Default is 'Bazin'.
         screen: bool (optional)
             If True, print on screen number of light curves processed.
             Default is False.
+        survey: str (optional)
+            Survey used to obtain the data. The current implementation
+            only accepts survey='DES' or 'LSST'.
+            Default is 'DES'.
+        sample: str (optional)
+            If None, sample is given by a column within the given file.
+            else, read independent files for 'train' and 'test'.
+            Default is None.
+        #from_file: bool (optional)
+        #    If True, reads data always from files.
+        #    Else separate data on the fly. 
+	#    Default is True. 
         """
 
-        if method == 'Bazin':
-            self.load_bazin_features(path_to_file, screen=screen)
+        if method == 'Bazin' and from_file:
+            self.load_bazin_features(path_to_file, screen=screen,
+                                     survey=survey, sample=sample)
+
+        #elif method == 'Bazin' and not from_file:
+        #    self.load_bazin_onthefly(path_to_file, )
+
+        elif method == 'photometry' and from_file:
+            self.load_photometry_features(path_to_file, screen=screen,
+                                          survey=survey, sample=sample)
         else:
-            raise ValueError('Only Bazin features are implemented! '
+            raise ValueError('Only Bazin and photometry features are implemented!'
                              '\n Feel free to add other options.')
 
+    def load_plasticc_mjd(self, path_to_data_dir):
+        """Return all MJDs from 1 file from PLAsTiCC simulations.
+    
+        Parameters
+        ----------
+        path_to_data_dir: str
+            Complete path to PLAsTiCC data directory.
+        """
+
+        # list of PLAsTiCC photometric files
+        flist = ['plasticc_test_lightcurves_' + str(x).zfill(2) + '.csv.gz'
+                  for x in range(1, 12)]
+
+        # add training file
+        flist = flist + ['plasticc_train_lightcurves.csv.gz']
+
+        # store max and min mjds
+        min_mjd = []
+        max_mjd = []
+
+        for fname in flist:
+        # read photometric points
+            if '.tar.gz' in fname:
+                tar = tarfile.open(path_to_data_dir + fname, 'r:gz')
+                name = tar.getmembers()[0]
+                content = tar.extractfile(name).read()
+                all_photo = pd.read_csv(io.BytesIO(content))
+            else:
+                all_photo = pd.read_csv(path_to_data_dir + fname, index_col=False)
+
+                if ' ' in all_photo.keys()[0]:
+                    all_photo = pd.read_csv(path_to_data_dir + fname, sep=' ',
+                                            index_col=False)
+
+            # get limit mjds
+            min_mjd.append(min(all_photo['mjd']))
+            max_mjd.append(max(all_photo['mjd']))
+
+
+        self.plasticc_mjd_lim = [min(min_mjd), max(max_mjd)]
+
     def build_samples(self, initial_training='original', nclass=2,
-                      screen=False):
+                      screen=False, Ia_frac=0.1, save_samples=False,
+                      sep_files=False):
         """Separate train and test samples.
 
         Populate properties: train_features, train_header, test_features,
@@ -230,10 +413,24 @@ class DataBase:
             Currently only nclass == 2 is implemented.
         screen: bool (optional)
             If True display the dimensions of training and test samples.
+        save_samples: bool (optional)
+            If True, save training and test samples to file.
+            it is only used if initial_training = int.
+        Ia_frac: float in [0,1] (optional)
+            Fraction of Ia required in initial training sample.
+            Default is 0.1.
+        sep_files: bool (optional)
+            If True, consider train and test samples separately read 
+            from independent files.
         """
 
+        if 'id' in self.train_metadata.keys():
+            id_name = 'id'
+        elif 'objid' in self.train_metadata.keys():
+            id_name = 'objid'
+            
         # separate original training and test samples
-        if initial_training == 'original':
+        if initial_training == 'original' and not sep_files:
             train_flag = self.metadata['sample'] == 'train'
             train_data = self.features[train_flag]
             self.train_features = train_data.values
@@ -247,9 +444,9 @@ class DataBase:
 
             if 'queryable' in self.metadata['sample'].values:
                 queryable_flag = self.metadata['sample'].values == 'queryable'
-                self.queryable_ids = self.metadata[queryable_flag]['id'].values
+                self.queryable_ids = self.metadata[queryable_flag][id_name].values
             else:
-                self.queryable_ids = self.test_metadata['id'].values
+                self.queryable_ids = self.test_metadata[id_name].values
 
             if nclass == 2:
                 train_ia_flag = self.train_metadata['type'] == 'Ia'
@@ -261,44 +458,117 @@ class DataBase:
                 raise ValueError("Only 'Ia x non-Ia' are implemented! "
                                  "\n Feel free to add other options.")
 
+        elif initial_training == 'original' and sep_files:
+
+            # get samples labels in a separate object
+            train_labels = self.train_metadata['type'].values == 'Ia'
+            self.train_labels = train_labels.astype(int) 
+
+            test_labels = self.test_metadata['type'].values == 'Ia'
+            self.test_labels = test_labels.astype(int)
+
+            # identify queryable objects
+            if 'queryable' in self.test_metadata['sample'].values:
+                queryable_flag = self.test_metadata['sample'] == 'queryable'
+                self.queryable_ids = self.test_metadata[queryable_flag][id_name].values
+
+            else:
+                self.queryable_ids = self.test_metadata[id_name].values
+
+            # build complete metadata object
+            self.metadata = pd.concat([self.train_metadata, self.test_metadata])
+
+
+        elif isinstance(initial_training, int) and sep_files:
+
+            # build complete metadata object
+            self.metadata = pd.concat([self.train_metadata, self.test_metadata])
+            self.features = np.concatenate((self.train_features, self.test_features))
+            
+            # identify Ia
+            ia_flag = self.metadata['type'] == 'Ia'
+            
+            # separate per class
+            Ia_data = self.metadata[ia_flag]
+            nonIa_data = self.metadata[~ia_flag]
+
+            # get subsamples for training
+            temp_train_ia = Ia_data.sample(n=int(Ia_frac * initial_training))
+            temp_train_nonia = nonIa_data.sample(n=int((1-Ia_frac)*initial_training))
+
+            # join classes
+            frames_train = [temp_train_ia, temp_train_nonia]
+            temp_train = pd.concat(frames_train, ignore_index=True)
+            train_flag = np.array([self.metadata[id_name].values[i] in temp_train[id_name].values
+                                   for i in range(self.metadata.shape[0])])
+
+            self.train_metadata = self.metadata[train_flag]
+            self.train_labels = self.metadata['type'][train_flag].values == 'Ia'
+            self.train_features = self.features[train_flag]
+
+            # get test sample
+            self.test_metadata = self.metadata[~train_flag]
+            self.test_labels = self.metadata['type'][~train_flag].values == 'Ia'
+            self.test_features = self.features[~train_flag]
+            
+            if 'queryable' in self.metadata['sample'].values:
+                queryable_flag = self.metadata['sample'] == 'queryable'
+                combined_flag = np.logical_and(~train_flag, queryable_flag)
+                self.queryable_ids = self.metadata[combined_flag][id_name].values
+            else:
+                self.queryable_ids = self.test_metadata[id_name].values
+
+            # check if there are repeated ids
+            train_test_flag = np.array([True if item in self.test_metadata[id_name].values
+                                        else False for item in
+                                        self.train_metadata[id_name].values])
+
+            if sum(train_test_flag) > 0:
+                raise ValueError('There are repeated ids!!')
+
+            test_train_flag = np.array([True if item in self.train_metadata[id_name].values
+                                        else False for item in
+                                        self.test_metadata[id_name].values])
+
+            if sum(test_train_flag) > 0:
+                raise ValueError('There are repeated ids!!')
+            
+
         elif isinstance(initial_training, int):
 
-            # initialize the temporary label holder
-            train_indexes = np.array([1])
-            temp_labels = np.array([self.metadata['type'].values[train_indexes]])
+            # get Ia flag
+            data_copy = self.metadata.copy()            
+            ia_flag = data_copy['type'] == 'Ia'
+            
+	    # separate data per class 
+            Ia_data = data_copy[ia_flag]
+            nonIa_data = data_copy[~ia_flag]
 
-            # make sure half are Ias and half are non-Ias
-            while sum(temp_labels == 'Ia') != initial_training // 2 + 1:
-                # this is an array of 5 indexes
-                train_indexes = np.random.randint(low=0,
-                                                  high=self.metadata.shape[0],
-                                                  size=initial_training)
-                temp_labels = self.metadata['type'].values[train_indexes]
+            # get subsamples for training
+            temp_train_ia = Ia_data.sample(n=int(Ia_frac * initial_training))
+            temp_train_nonia = nonIa_data.sample(n=int((1-Ia_frac)*initial_training))
 
-            # set training
-            train_flag = self.metadata['type'].values[train_indexes] == 'Ia'
-            self.train_labels = np.array([int(item) for item in train_flag])
-            self.train_features = self.features.values[train_indexes]
-            self.train_metadata = pd.DataFrame(self.metadata.values[train_indexes],
-                                               columns=self.metadata_names)
+            # join classes
+            frames_train = [temp_train_ia, temp_train_nonia]
+            temp_train = pd.concat(frames_train, ignore_index=True)
+            train_flag = np.array([data_copy[id_name].values[i] in temp_train[id_name].values
+                                   for i in range(data_copy.shape[0])])
 
-            # set test set as all objs apart from those in training
-            test_indexes = np.array([i for i in range(self.metadata.shape[0])
-                                     if i not in train_indexes])
-            test_ia_flag = self.metadata['type'].values[test_indexes] == 'Ia'
-            self.test_labels = np.array([int(item) for item in test_ia_flag])
-            self.test_features = self.features.values[test_indexes]
-            self.test_metadata = pd.DataFrame(self.metadata.values[test_indexes],
-                                              columns=self.metadata_names)
+            self.train_metadata = data_copy[train_flag]
+            self.train_labels = data_copy['type'][train_flag].values == 'Ia'
+            self.train_features = self.features[train_flag].values
 
+            # get test sample
+            self.test_metadata = data_copy[~train_flag]
+            self.test_labels = data_copy['type'][~train_flag].values == 'Ia'
+            self.test_features = self.features[~train_flag].values
+            
             if 'queryable' in self.metadata['sample'].values:
-                test_flag = np.array([True if i in test_indexes else False
-                                      for i in range(self.metadata.shape[0])])
-                queryable_flag = self.metadata['sample'] == 'queryable'
-                combined_flag = np.logical_and(test_flag, queryable_flag)
-                self.queryable_ids = self.metadata[combined_flag]['id'].values
+                queryable_flag = data_copy['sample'] == 'queryable'
+                combined_flag = np.logical_and(~train_flag, queryable_flag)
+                self.queryable_ids = data_copy[combined_flag][id_name].values
             else:
-                self.queryable_ids = self.test_metadata['id'].values
+                self.queryable_ids = self.test_metadata[id_name].values
 
         else:
             raise ValueError('"Initial training" should be '
@@ -375,20 +645,25 @@ class DataBase:
             If strategy=='RandomSampling' the order is irrelevant.
         """
 
+        if 'objid' in self.test_metadata.keys():
+            id_name = 'objid'
+        elif 'id' in self.test_metadata.keys():
+            id_name = 'id'
+            
         if strategy == 'UncSampling':
             query_indx = uncertainty_sampling(class_prob=self.classprob,
                                               queryable_ids=self.queryable_ids,
-                                              test_ids=self.test_metadata['id'].values,
+                                              test_ids=self.test_metadata[id_name].values,
                                               batch=batch, dump=dump)
             return query_indx
 
         elif strategy == 'RandomSampling':
             query_indx = random_sampling(queryable_ids=self.queryable_ids,
-                                         test_ids=self.test_metadata['id'].values,
+                                         test_ids=self.test_metadata[id_name].values,
                                          batch=batch)
 
             for n in query_indx:
-                if self.test_metadata['id'].values[n] not in self.queryable_ids:
+                if self.test_metadata[id_name].values[n] not in self.queryable_ids:
                     raise ValueError('Chosen object is not available for query!')
 
             return query_indx
@@ -412,8 +687,14 @@ class DataBase:
             Store number of loop when this query was made.
         """
 
+        if 'id' in self.train_metadata.keys():
+            id_name = 'id'
+        elif 'objid' in self.train_metadata.keys():
+            id_name = 'objid'
+            
         all_queries = []
         for obj in query_indx:
+
             # add object to the query sample
             query_header = self.test_metadata.values[obj]
             query_features = self.test_features[obj]
@@ -435,10 +716,11 @@ class DataBase:
                                           axis=0)
 
             # remove queried object from test sample
-            self.test_metadata = self.test_metadata.drop(self.test_metadata.index[obj])
+            query_flag = self.test_metadata[id_name].values == self.test_metadata[id_name].iloc[obj]
+            test_metadata_temp = self.test_metadata.copy()
+            self.test_metadata = test_metadata_temp[~query_flag]
             self.test_labels = np.delete(self.test_labels, obj, axis=0)
             self.test_features = np.delete(self.test_features, obj, axis=0)
-
             all_queries.append(line)
 
         # update queried samples

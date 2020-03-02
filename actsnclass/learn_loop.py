@@ -24,7 +24,8 @@ from actsnclass import DataBase
 def learn_loop(nloops: int, strategy: str, path_to_features: str,
                output_diag_file: str, output_queried_file: str,
                features_method='Bazin', classifier='RandomForest',
-               training='original', batch=1, screen=True):
+               training='original', batch=1, screen=True, survey='DES',
+               nclass=2):
     """Perform the active learning loop. All results are saved to file.
 
     Parameters
@@ -33,8 +34,11 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
         Number of active learning loops to run.
     strategy: str
         Query strategy. Options are 'UncSampling' and 'RandomSampling'.
-    path_to_features: str
+    path_to_features: str or dict
         Complete path to input features file.
+        if dict, keywords should be 'train' and 'test', 
+        and values must contain the path for separate train 
+        and test sample files.
     output_diag_file: str
         Full path to output file to store diagnostics of each loop.
     output_queried_file: str
@@ -54,18 +58,34 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
         Size of batch to be queried in each loop. Default is 1.
     screen: bool (optional)
         If True, print on screen number of light curves processed.
+    survey: str (optional)
+        'DES' or 'LSST'. Default is 'DES'.
+        Name of the survey which characterizes filter set.
+    nclass: int (optional)
+        Number of classes to consider in the classification
+        Currently only nclass == 2 is implemented.    
     """
 
     # initiate object
     data = DataBase()
 
     # load features
-    data.load_features(path_to_features, method=features_method,
-                       screen=screen)
+    if isinstance(path_to_features, str):
+        data.load_features(path_to_features, method=features_method,
+                           screen=screen, survey=survey)
 
-    # separate training and test samples
-    data.build_samples(initial_training=training)
+        # separate training and test samples
+        data.build_samples(initial_training=training, nclass=nclass)
 
+    else:
+        data.load_features(path_to_features['train'], method=features_method,
+                           screen=screen, survey=survey, sample='train')
+        data.load_features(path_to_features['test'], method=features_method,
+                           screen=screen, survey=survey, sample='test')
+
+        data.build_samples(initial_training=training, nclass=nclass,
+                           screen=screen, sep_files=True)
+        
     for loop in range(nloops):
 
         if screen:
