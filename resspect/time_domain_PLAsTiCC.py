@@ -62,6 +62,7 @@ class PLAsTiCCPhotometry(object):
         Read metadata and filter only required classes.
     write_bazin_to_file(lightcurve: LightCurve, features_file: str)
         Write Bazin parameters and metadata to file.
+
     """
 
     def __init__(self):
@@ -102,6 +103,7 @@ class PLAsTiCCPhotometry(object):
             List of elements to be added to the header.
             Separate by 1 space.
             Default option uses header for Bazin features file.
+
         """
 
         features_file = output_dir + 'day_' + str(day) + '_v' + str(vol) +'.dat'
@@ -173,6 +175,7 @@ class PLAsTiCCPhotometry(object):
             Path to directory containing all PLAsTiCC zenodo data.
         output_dir: str
             Output directory.
+
         """
         
         ## create daily files
@@ -212,6 +215,7 @@ class PLAsTiCCPhotometry(object):
         -------
         line: str
             A line concatenating metadata and Bazin fits for 1 obj.
+
         """
 
         # build an entire line with bazin features
@@ -248,6 +252,7 @@ class PLAsTiCCPhotometry(object):
             Possibilities are 'train' or 'test'.
         output_dir:
             Directory to store output time domain files.
+
         """
 
         # store number of points per day
@@ -355,6 +360,7 @@ class PLAsTiCCPhotometry(object):
         feature_method: str
             Feature extraction method. 
             Only possibility now is 'Bazin'.
+
         """
         
         # count survivers

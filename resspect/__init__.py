@@ -16,21 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from actsnclass.bazin import *
-from actsnclass.build_snpcc_canonical import *
-from actsnclass.build_snpcc_canonical import *
-from actsnclass.classifiers import *
-from actsnclass.learn_loop import *
-from actsnclass.metrics import *
-from actsnclass.query_strategies import *
-from actsnclass.scripts.build_canonical import main as build_canonical
-from actsnclass.scripts.build_time_domain import main as build_time_domain
-from actsnclass.scripts.fit_dataset import main as fit_dataset
-from actsnclass.scripts.make_diagnostic_plots import main as make_diagnostic_plots
-from actsnclass.scripts.run_loop import main as run_loop
-from actsnclass.scripts.run_time_domain import main as run_time_domain
-from actsnclass.time_domain import *
-from actsnclass.time_domain_loop import get_original_training
 
 from .database import *
 from .fit_lightcurves import *
@@ -38,32 +23,14 @@ from .plot_results import *
 from .time_domain_PLAsTiCC import *
 
 
-__all__ = ['accuracy',
-           'bazin',
-           'build_canonical',
-           'build_snpcc_canonical',
-           'Canonical',
-           'Canvas',
+__all__ = ['Canvas',
            'DataBase',
-           'efficiency',
-           'fit_dataset',
-           'fit_scipy',
            'fit_snpcc_bazin',
            'fit_plasticc_bazin',
            'fit_resspect_bazin',
-           'fom',
-           'get_snpcc_metric',
+           'knn',
            'learn_loop',
            'LightCurve',
            'make_diagnostic_plots',
            'perc_sampling',
-           'PLAsTiCCPhotometry',
-           'plot_snpcc_train_canonical',
-           'purity',
-           'random_forest',
-           'knn',
-           'random_sampling',
-           'run_loop',
-           'run_time_domain',
-           'SNPCCPhotometry',
-           'uncertainty_sampling']
+           'PLAsTiCCPhotometry']

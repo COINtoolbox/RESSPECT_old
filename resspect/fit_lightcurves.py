@@ -544,6 +544,7 @@ def fit_snpcc_bazin(path_to_data_dir: str, features_file: str):
         Path to directory containing the set of individual files, one for each light curve.
     features_file: str
         Path to output file where results should be stored.
+
     """
 
     # read file names
@@ -596,6 +597,7 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
         Output file where the features will be stored.
     sample: str
 	'train' or 'test'. Default is None.
+
     """
     # count survivers
     count_surv = 0
@@ -697,6 +699,7 @@ def fit_plasticc_bazin(path_photo_file: str, path_header_file:str,
         Output file where the features will be stored.
     sample: str
 	'train' or 'test'. Default is None.
+
     """
     types = {90: 'Ia', 67: '91bg', 52:'Iax', 42:'II', 62:'Ibc', 
              95: 'SLSN', 15:'TDE', 64:'KN', 88:'AGN', 92:'RRL', 65:'M-dwarf',

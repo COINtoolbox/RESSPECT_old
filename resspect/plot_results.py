@@ -25,6 +25,7 @@ __all__ = ['Canvas']
 
 class Canvas(object):
     """Canvas object, handles and plot information from multiple strategies.
+
     Attributes
     ----------
     axis_label_size: int
@@ -59,6 +60,7 @@ class Canvas(object):
     strategies: dict
         Dictionary connecting each data frame to its
         standard nomenclature (not the plot labels).
+
     Methods
     -------
     load_diagnostics(path_to_files: list, strategy_list: list)
@@ -67,6 +69,7 @@ class Canvas(object):
         Set directives for plot sizes based on number of metrics.
     plot_diagnostics(output_plot_file: str, strategies_list: list)
         Generate plot for all metrics in files and strategies given as input.
+
     Examples
     --------
     Define input variables
@@ -83,6 +86,7 @@ class Canvas(object):
     >>> cv.set_plot_dimensions()
     >>> cv.plot_diagnostics(output_plot_file=output_plot,
     >>>                    strategies_list=strategies_list)
+
     """
 
     def __init__(self):
@@ -127,6 +131,7 @@ class Canvas(object):
             List of all strategies to be included in the same plot.
             Current possibibilities are:
             ['canonical', 'rand_sampling', 'unc_sampling'].
+
         """
 
         # read data
@@ -144,6 +149,7 @@ class Canvas(object):
     def set_plot_dimensions(self):
         """Set directives for plot sizes.
         Populates attributes: nmetrics, ncolumns, and fig_size.
+
         """
 
         # determine number of lines and columns in plot
@@ -152,8 +158,8 @@ class Canvas(object):
         self.fig_size = (10 * self.ncolumns, 7 * self.nlines)
 
     def plot_diagnostics(self,  output_plot_file: str, strategies_list: list):
-        """
-        Generate plot for all metrics in files and strategies given as input.
+        """Generate plot for all metrics in files and strategies given as input.
+
         Parameters
         ----------
         output_plot_file : str
@@ -162,6 +168,7 @@ class Canvas(object):
             List of all strategies to be included in the same plot.
             Current possibibilities are:
             ['canonical', 'rand_sampling', 'unc_sampling'].
+
         """
 
         # set of all matrices to be plotted

@@ -4,7 +4,7 @@ How to contribute
 =================
 
 Below you will find general guidance on how to prepare your piece of code to be integrated to the
-``RESSPECT`` environment.
+``resspect`` environment.
 
 
 Add a new data set
@@ -53,7 +53,7 @@ The function below show how the basic structure required to deal with 1 light cu
 Feel free to also provide other keywords which might be important to handle your data.
 Given a function like this we should be capable of incorporating it into the pipeline.
 
-Please refer to the :py:mod:`RESSPECT.fit_lightcurves` module for a closer look at this part of the code.
+Please refer to the :ref:`resspect.fit_lightcurves<>` module for a closer look at this part of the code.
 
 
 

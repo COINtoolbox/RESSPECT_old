@@ -25,7 +25,7 @@ from sklearn.neighbors import KNeighborsClassifier
 
 def knn(train_features:  np.array, train_labels: np.array,
                   test_features: np.array, nneighbors=10):
-    """Random Forest classifier.
+    """k-Nearest Neighbor classifier.
 
     Parameters
     ----------

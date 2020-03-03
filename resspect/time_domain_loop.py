@@ -68,6 +68,7 @@ def time_domain_loop(days: list,  output_diag_file: str,
         If int: choose the required number of samples at random,
         ensuring that at least half are SN Ia
         Default is 'original'.
+
     """
 
     ## This will need to change for RESSPECT
