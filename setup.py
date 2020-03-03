@@ -1,6 +1,6 @@
-# Copyright 2019 actsnclass software
-# Author: Emille E. O. Ishida
-#         Based on initial prototype developed by the CRP #4 team
+# Copyright 2020 resspect software
+# Author: The RESSPECT team
+#         Initial skeleton from ActSNClass
 #
 # created on 7 August 2019
 #
@@ -20,7 +20,7 @@ import setuptools
 
 
 setuptools.setup(
-    name='RESSPECT',
+    name='resspect',
     version='0.1',
     packages=setuptools.find_packages(),
     py_modules=['classifiers',
@@ -35,6 +35,6 @@ setuptools.setup(
     url='https://github.com/COINtoolbox/RESSPECT',
     license='GNU3',
     author='The RESSPECT team',
-    author_email='emille@cosmostatistics-initiative.org',
+    author_email='contact@cosmostatistics-initiative.org',
     description='Recommendation System for Spectroscopic follow-up'
 )

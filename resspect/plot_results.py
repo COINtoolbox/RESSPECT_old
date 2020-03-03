@@ -1,6 +1,6 @@
-# Copyright 2020 snactclass software
+# Copyright 2020 resspect software
 # Author: The RESSPECT team
-#         Based on initial prototype developed by the CRP #4 team
+#         Initial skeleton taken from ActSNClass
 #
 # created on 2 March 2020
 #

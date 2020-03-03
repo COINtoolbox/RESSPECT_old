@@ -1,4 +1,4 @@
-# Copyright 2020 RESSPECT software
+# Copyright 2020 resspect software
 # Author: The RESSPECT team
 #         Initial skeleton from ActSNClass
 #

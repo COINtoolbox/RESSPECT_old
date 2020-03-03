@@ -1,4 +1,4 @@
-# Copyright 2020 RESSPECT software
+# Copyright 2020 resspect software
 # Author: The RESSPECT team
 #         Initial skeleton from ActSNClass
 #
@@ -587,7 +587,8 @@ class DataBase:
         ----------
         method: str (optional)
             Chosen classifier.
-            The current implementation on accepts `RandomForest`.
+            The current implementation on accepts `RandomForest`
+            and `knn`.
         """
 
         if method == 'RandomForest':
@@ -595,7 +596,7 @@ class DataBase:
                 random_forest(self.train_features, self.train_labels,
                               self.test_features, nest=self.ntrees)
 
-        if method == 'knn':
+        elif method == 'knn':
             self.predicted_class,  self.classprob = \
                 knn(self.train_features, self.train_labels,
                     self.test_features, nneighbors=self.nn)

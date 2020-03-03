@@ -1,4 +1,4 @@
-# Copyright 2020 RESSPECT software
+# Copyright 2020 resspect software
 # Author: The RESSPECT team
 #         Based on initial prototype developed by the CRP #4 team
 #
