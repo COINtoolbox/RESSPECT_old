@@ -1,3 +1,5 @@
 resspect.egg-info/
 build/
 dist/
+docs/source/_build
+docs/source/api/
