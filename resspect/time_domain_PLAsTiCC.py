@@ -69,7 +69,7 @@ class PLAsTiCCPhotometry(object):
         self.bazin_header = 'id redshift type code sample queryable uA uB ut0 ' + \
                             'utfall utrise gA gB gt0 ' + \
                             'gtfall gtrise rA rB rt0 rtfall rtrise iA ' + \
-                            'iB it0 itfall itrise zA zB zt0 ztfall ztrise' + \
+                            'iB it0 itfall itrise zA zB zt0 ztfall ztrise ' + \
                             'YA YB Yt0 Ytfall Ytrise\n'
         self.class_code = {90: 'Ia', 67: '91bg', 52:'Iax', 42:'II', 62:'Ibc', 
              95: 'SLSN', 15:'TDE', 64:'KN', 88:'AGN', 92:'RRL', 65:'M-dwarf',
